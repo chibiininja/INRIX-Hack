@@ -44,3 +44,6 @@ body {
   padding-left: 20px;
 }
 
+#map {
+  height: 180px;
+}

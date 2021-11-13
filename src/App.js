@@ -1,84 +1,71 @@
 import './App.css';
-import React, { useState } from "react";
+import React from "react";
 import Header from './Header.js';
-import { getByDisplayValue } from '@testing-library/react';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+ 
+const count = [];
 
-const api_url = 
-            'https://trade-areas-api.inrix.com/v1/trips-count?geoFilterType=polygon&od=origin&points=47.611512|-122.340262,47.609197|-122.338718,47.607809|-122.334083,47.612669|-122.331422,47.614926|-122.334168&limit=1000';  
-      //"https://trade-areas-api.inrix.com/v1/trips?geoFilterType=polygon&od=origin&points=47.611512|-122.340262,47.609197|-122.338718,47.607809|-122.334083,47.612669|-122.331422,47.614926|-122.334168&limit=1000";
-
-  
-// Defining async function
-async function getapi(url) {
-    
-    // Storing response
-    const response = await fetch(url);
-    
-    // Storing data in form of JSON
-    var data = await response.json();
-    console.log(data);
-    if (response) {
-        hideloader();
-    }
-    show(data);
-}
-// Calling that async function
-getapi(api_url);
-  
-// Function to hide the loader
-function hideloader() {
-    document.getElementById('loading').style.display = 'none';
-}
-// Function to define innerHTML for HTML table
-function show(data) {
-  let tab = 
-      `<tr>
-        <th>Count</th>
-       </tr>`;
-  
-  // Loop to access all rows 
-  for (let r of data.list) {
-      tab += `<tr> 
-  <td>${r.count} </td>          
-</tr>`;
-  }
-  // Setting innerHTML as tab variable
-  document.getElementById("employees").innerHTML = tab;
-}
+var mymap = L.map('map').setView([51.505, -0.09], 13);
+L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: 'pk.eyJ1IjoiY2hpYmlpbmluamEiLCJhIjoiY2t2eWdkcGY4OXpqZzJucTFyYTJ1b2JveCJ9.IinndvkpMEgMfl74u4Gjogpk.eyJ1IjoiY2hpYmlpbmluamEiLCJhIjoiY2t2eWdkcGY4OXpqZzJucTFyYTJ1b2JveCJ9.IinndvkpMEgMfl74u4Gjogpk.eyJ1IjoiY2hpYmlpbmluamEiLCJhIjoiY2t2eWdkcGY4OXpqZzJucTFyYTJ1b2JveCJ9.IinndvkpMEgMfl74u4Gjogpk.eyJ1IjoiY2hpYmlpbmluamEiLCJhIjoiY2t2eWdkcGY4OXpqZzJucTFyYTJ1b2JveCJ9.IinndvkpMEgMfl74u4Gjogpk.eyJ1IjoiY2hpYmlpbmluamEiLCJhIjoiY2t2eWdkcGY4OXpqZzJucTFyYTJ1b2JveCJ9.IinndvkpMEgMfl74u4Gjogpk.eyJ1IjoiY2hpYmlpbmluamEiLCJhIjoiY2t2eWdkcGY4OXpqZzJucTFyYTJ1b2JveCJ9.IinndvkpMEgMfl74u4Gjogpk.eyJ1IjoiY2hpYmlpbmluamEiLCJhIjoiY2t2eWdkcGY4OXpqZzJucTFyYTJ1b2JveCJ9.IinndvkpMEgMfl74u4Gjog'
+}).addTo(mymap);
 
 class App extends React.Component {
   
-  // constructor(props) {
+  constructor(props) {
 
-  //   super(props);
+    super(props);
 
-  //   this.state = {
-  //     items: [],
-  //     isLoaded: false,
-  //   }
+    this.state = {
+      items: [],
+      isLoaded: false,
+    }
 
-  // }
+  }
 
-  
+  //http://docs.inrix.com/analytics/tradeareatrips/#get-trips-count
 
-  // componentDidMount() {
-      
+  componentDidMount() {
+    const start_lat = 37.352039;
+    const start_long = -121.937393;
+    const mileBD = 5/69;
+    const mileSD = 5/1104;
+    for(let i = 0; i < 10; i++){
+      //var lat1 = start_lat + (i * 0.00722543);
+      //var long1 = start_long - (i * 0.00722543);
+      //var lat2 = start_lat - (i * 0.00722543);
+      //var long2 = start_long + (i * 0.00722543);
+      var lat1 = start_lat + mileBD - mileSD;
+      var lat2 = start_long - mileBD + m__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+
+
+      const url = `https://api.iq.inrix.com/v1/trips-count?od=origin&geoFilterType=bbox&points=%${lat1|long1},${lat2|long2}&startDateTime=%3E%3D2020-12-01T02%3A31&endDateTime=%3C%3D2020-12-15T02%3A31`;
+    fetch(url, {
+      headers: {
+        "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhcHBJZCI6IjFqdW5xeWdkcWciLCJ0b2tlbiI6eyJpdiI6ImZjNjg2MmNmNGNlOTY3NTc2NzVjNWIxYzFhYTkwN2FjIiwiY29udGVudCI6Ijk3Mzk2ZjU4YmU0ZmQzNmFmY2FmOWE3MzIxZGFkMTBiYTdhY2RmOWRlN2Y3ZTRkZDNiOGQ0ZmE3YTc5ZjAxNjY2MzlmMGEwNDE2NzVlY2NkYWEzMWQ3ZDU5Zjc0NjA1YzJjODgyYWU4OGNkZWRhYTc2NGNkYWU0MTM2Mzk0YzllYWQ1NDViNjI5MzRlMWQ4Mzc1NDUyNmU4ODc5M2Q4MWY5NzUwM2NhZWE1NzljMDkyM2VkYWYwNWI3ZmEyNzUyMzU1OTdiYmE2NzRjZTBhMzMwODZiMTEwMzM5OTczMDdjZDA4NWYxY2MzYjdiNzAzMTY4NDZhMzg4M2ZhM2VlOWE3YjdjMDYxMjQ3YWU0MGFjYjFmNGJkODIyMGZlMTBlY2Y5MDUxNDczNzQ3NzcxZjQ5MWVkNzllOWIyNTFlNmYwNzY0MjdiYzJjZDAzODUzNWQ4ZWY0MDQyYWI4YTUzNTM4MzA2MzhhMDFiNTExMDk4MjU5Y2FmMDY5NjgxZWQzYzVkZWY4NzMzNmE3YmEyNDNlYWI4NzI1OTFhZWVhYTZjYzBjZDk3YTFhMWIxZDM0ZTBlNGY0NTA3Nzc1NWIwZTFmYWI2N2E3ODE3NjgxM2VkNGIyOTEwZWMwOTliMmEzYTcwOWEwZjNlNmE5MjRjZTE0OTNkM2M4ZTAwNjZlMWZlNzFmNDIzYmI3Mzc0YjUwNTU5NDdmNDE0OWM0Mzg2N2MyOGMyYjZiYmVkMWM4MzM5ZjMzZWIxY2VmNmFiYjcxYmRlZGRiY2RjNjdiYjhhNTdlZmMxOWQ2MDMwN2I3ZWY4NGUyNGEwYzRlMDI2NWEzNzcwNTg0Yzc4MTE2ZTU5ODcwNDlhNGQxMWQ1MDNkNDc3M2U0ODMwIn0sInNlY3VyaXR5VG9rZW4iOnsiaXYiOiJmYzY4NjJjZjRjZTk2NzU3Njc1YzViMWMxYWE5MDdhYyIsImNvbnRlbnQiOiJhMzNhMTE0YThlN2FkNDcyZjZiY2E0N2M0Njk2ZDM2MjlhYWVkN2RhZmVlZGUzYmMwMWI0N2ZlNWM0OTEzNDUxNzI4OTE1MGU1YzQyZDBmMjgwMDFlY2ViIn0sImp0aSI6IjUzZDgwZTcwLTBkNWUtNDdmMy1hNWM5LWFjYWYxOTcwNTEzNCIsImlhdCI6MTYzNjg0MjU3NSwiZXhwIjoxNjM2ODQ2MTc0fQ.YTcHkg_Azl4ttqOhEIYbp9Zb_By9cMOCMdH7L55sRsU"
+      }
+    }) 
+      .then(res => res.json())
+      .then(json => {
+        count[i]=(json);
+        console.log(json);
+        this.this.setState({
+          items: json,
+          isLoaded: true,
+        })
+      }).catch((err) => {
+        console.log(err);
+      })
+
+    }
     
 
-  //   fetch('https://trade-areas-api.inrix.com/v1/trips?geoFilterType=polygon&od=origin&points=47.611512|-122.340262,47.609197|-122.338718,47.607809|-122.334083,47.612669|-122.331422,47.614926|-122.334168&limit=1000') 
-  //     .then(res => res.json())
-  //     .then(json => {
-  //       console.log(json);
-  //       getByDisplayValue(json);
-  //       this.this.setState({
-  //         items: json,
-  //         isLoaded: true,
-  //       })
-  //     }).catch((err) => {
-  //       console.log(err);
-  //     })
-
-  // }
+  }
 
   //renders App
   render() {
@@ -88,9 +75,9 @@ class App extends React.Component {
         <body>
           <Header />
           <div class="sidenav">
-            <a href="#">Most Popular</a>
+            {/* <a href="#">Most Popular</a>
             <a href="#">Least Popular</a>
-            <a href="#">MISC</a>
+            <a href="#">MISC</a> */}
           </div>
 
           <div class="content">
@@ -98,16 +85,20 @@ class App extends React.Component {
             <p>A full-height, fixed side and content.</p>
           </div>
 
-          <div class="d-flex justify-content-center">
-            <div class="spinner-border" 
-                 role="status" id="loading">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </div>
-        <h1>Registered Employees</h1>
-        <table id="employees"></table>
+          {/* Map stuff */}
+          <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false}>
+            <TileLayer
+              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <Marker position={[51.505, -0.09]}>
+              <Popup>
+                A pretty CSS3 popup. <br /> Easily customizable.
+              </Popup>
+            </Marker>
+          </MapContainer>
 
-          </body>
+        </body>
       </div>
     );
 
