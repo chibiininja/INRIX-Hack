@@ -33,8 +33,8 @@ class App extends React.Component {
   componentDidMount() {
     const start_lat = 37.352039;
     const start_long = -121.937393;
-    const mileBD = 5/69;
-    const mileSD = 5/1104;
+    const mileBS = 5/69;
+    const mileSS = 5/1104;
     for(let i = 0; i < 10; i++){
       //var lat1 = start_lat + (i * 0.00722543);
       //var long1 = start_long - (i * 0.00722543);
