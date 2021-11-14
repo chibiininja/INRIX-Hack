@@ -1,3 +1,13 @@
+header {
+  position: absolute;
+  text-align: center;
+  background: #ffffff;
+  color: black;
+  font-size: 30px;
+  width: 500%;
+  z-index: 2;
+}
+
 .Header {
   background-color: #282c34;
   min-height: 100vh;
@@ -9,6 +19,7 @@
   color: white;
 }
 
-.Header-link {
-  color: #61dafb;
+.logo {
+  height: 200px;
+  width: 400px;
 }
