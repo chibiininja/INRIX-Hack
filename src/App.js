@@ -27,14 +27,10 @@ class App extends React.Component {
     const mileSS = 5/1104;
     for(let i = 0; i < 32; i++){
       for(let j = 0; j < 32; j++){
-        //var lat1 = start_lat + (i * 0.00722543);
-        //var long1 = start_long - (i * 0.00722543);
-        //var lat2 = start_lat - (i * 0.00722543);
-        //var long2 = start_long + (i * 0.00722543);
-        var lat1 = start_lat + mileBS - i(mileSS);
-        var long1 = start_long - mileBS + j(mileSS);
-        var lat2 = start_lat + mileBS - mileSS - i(mileSS);
-        var long2 = start_long - mileBS + mileSS + j(mileSS);
+        var lat1 = start_lat + mileBS - (i * (mileSS));
+        var long1 = start_long - mileBS + (j * (mileSS));
+        var lat2 = start_lat + mileBS - mileSS - (i * (mileSS));
+        var long2 = start_long - mileBS + mileSS + (j * (mileSS));
 
 
         const url = `https://api.iq.inrix.com/v1/trips-count?od=origin&geoFilterType=bbox&points=%${lat1|long1},${lat2|long2}&startDateTime=%3E%3D2020-12-01T02%3A31&endDateTime=%3C%3D2020-12-15T02%3A31`;
@@ -79,17 +75,16 @@ class App extends React.Component {
             <p>A full-height, fixed side and content.</p>
           </div>
 
-          {/* Map stuff */}
-          {/* <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false}>
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            <Marker position={[51.505, -0.09]}>
-              <Popup></Popup>
-                A pretty CSS3 popup. <br /> Easily customizable.
-              </Popup>
-            </Marker>
-          </MapContainer> */}
+          <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false}>
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              <Marker position={[51.505, -0.09]}>
+                <Popup>
+                  A pretty CSS3 popup. <br /> Easily customizable.
+                </Popup>
+              </Marker>
+          </MapContainer>
 
         </body>
       </div>
