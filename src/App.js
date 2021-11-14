@@ -2,12 +2,19 @@ import './App.css';
 import React from "react";
 import Header from './components/Header.js';
 import { MapContainer, TileLayer, Rectangle, Tooltip} from 'react-leaflet'; 
- 
+/*
+  Import components, css files, React, and Leaflet
+*/
+
 const cSize = 40;
 const count = [];
 for(let i=0; i<cSize; i++){
   count[i] = Array(cSize);
 }
+/*
+  Initializes the 2D array of the trips/count grid
+*/
+
 newFunc2();
 //newFunc3();
 
@@ -98,6 +105,9 @@ function MapSlot() {
     </MapContainer>
   );
 }
+/*
+  Creates a Map component using Leaflet, calls createGrid() to draw the grid on the map.
+*/
 
 function createGrid(coordsGrid) {
   return coordsGrid.map(createRow);
@@ -120,6 +130,12 @@ function createRectangle(coord) {
       <Tooltip>{coord.count}</Tooltip>
     </Rectangle>;
 }
+/*
+  MapContainer from React-Leaflet can only be initialized once and is immutable,
+  therefore the grid must be drawn before mounting.
+*/
+
+
 
 class App extends React.Component {
   
@@ -145,6 +161,11 @@ class App extends React.Component {
     showArray();
   }
 
+  /*
+    async newFunc() would normally be called in componentDidMount(), 
+    but count needs to be initialized before mounting has occurred. 
+    Thus, count is intitalized and passed into the Leaflet Map before mounting occurs.
+  */
   // async newFunc() {
   //   const start_lat = 37.857;
   //   const start_long = -122.540;
@@ -203,6 +224,7 @@ class App extends React.Component {
       <div className="App">
         <body>
           
+          {/* Contains the main Logo */}
           <Header />
 
           {/* <div class="content">
@@ -211,6 +233,7 @@ class App extends React.Component {
             { <table>{tableData}</table> }
           </div>  */}
 
+          {/* Calls the creation of the Leaflet Map */}
           <MapSlot />
 
           {/* <div class="sidenav">
@@ -231,14 +254,8 @@ class App extends React.Component {
 
 }
 
+//meant for testing purposes
 function showArray() {
-  // Dummy values for testing rn
-  // for(let i=0; i<cSize; i++){
-  //   for(let j=0; j<cSize; j++){
-  //     count[i][j] = Math.ceil((Math.random()*100));
-  //   }
-  // }
-
   for(let i=0; i<cSize; i++){
     console.log(count[i]);
   }
